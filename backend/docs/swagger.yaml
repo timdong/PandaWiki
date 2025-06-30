@@ -1079,15 +1079,6 @@ definitions:
       title:
         type: string
     type: object
-  handler_v1.ConversationListItems:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/domain.ConversationListItem'
-        type: array
-      total:
-        type: integer
-    type: object
   schema.RoleType:
     enum:
     - assistant
@@ -1100,6 +1091,15 @@ definitions:
     - User
     - System
     - Tool
+  v1.ConversationListItems:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.ConversationListItem'
+        type: array
+      total:
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
@@ -1213,7 +1213,7 @@ paths:
             - $ref: '#/definitions/domain.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/handler_v1.ConversationListItems'
+                  $ref: '#/definitions/v1.ConversationListItems'
               type: object
       summary: get conversation list
       tags:

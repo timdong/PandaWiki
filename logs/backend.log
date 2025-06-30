@@ -1,0 +1,149 @@
+
+2025/06/30 14:18:44 [31;1m/code/github.com/timdong/PandaWiki/backend/repo/pg/model.go:33 [35;1mduplicated key not allowed
+[0m[33m[0.894ms] [34;1m[rows:0][0m INSERT INTO "models" ("id","provider","model","api_key","api_header","base_url","api_version","type","is_active","prompt_tokens","completion_tokens","total_tokens","created_at","updated_at") VALUES ('f2282609-80c0-47fe-b116-8bf82c261983','BaiZhiCloud','bge-m3','sk-r8tmBtcU1JotPDPnlgZLOY4Z6Dbb7FufcSeTkFpRWA5v4Llr','','https://model-square.app.baizhi.cloud/v1','','embedding',false,0,0,0,'2025-06-30 14:18:44.377','2025-06-30 14:18:44.377')
+time=2025-06-30T14:18:44.378+08:00 level=ERROR msg="init embedding & rerank model failed" error="init embedding model failed: duplicated key not allowed"
+time=2025-06-30T14:18:54.386+08:00 level=ERROR msg="initial report installation" error="send request: Post \"https://baizhi.cloud/api/public/data/report\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)"
+time=2025-06-30T14:18:54.387+08:00 level=INFO msg="Starting server on port 8000"
+time=2025-06-30T14:19:02.141+08:00 level=ERROR msg=REQUEST_ERROR remote_ip=127.0.0.1 method=GET uri=/health status=404 latency=0 err="code=404, message=Not Found"
+time=2025-06-30T14:19:20.156+08:00 level=ERROR msg="jwt auth failed" error="missing value in request header"
+time=2025-06-30T14:19:20.156+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/user status=401 latency=0
+time=2025-06-30T14:19:38.005+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/user/login status=200 latency=49
+time=2025-06-30T14:21:48.924+08:00 level=ERROR msg="failed to login" module=http_base_handler trace_id=812b32ee-f351-4a3f-adb0-2e7144d099c1 error="invalid password"
+time=2025-06-30T14:21:48.925+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/user/login status=200 latency=48
+time=2025-06-30T14:22:41.910+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/user/login status=200 latency=45
+time=2025-06-30T14:22:42.011+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/model/list status=200 latency=2
+time=2025-06-30T14:22:42.127+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/knowledge_base/list status=200 latency=1
+time=2025-06-30T14:22:42.285+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/user status=200 latency=0
+time=2025-06-30T14:22:42.301+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/user/list status=200 latency=1
+time=2025-06-30T14:22:42.335+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/knowledge_base/list status=200 latency=0
+time=2025-06-30T14:22:44.361+08:00 level=INFO msg="synced user access time to database" module=repo.pg.user_access update_count=1
+time=2025-06-30T14:23:20.950+08:00 level=ERROR msg="get user model list failed" module=http_base_handler trace_id=46523ea0-66ce-4f7d-b536-269d2dd1d9fd error="Get \"http://127.0.0.1:11434/api/tags\": dial tcp 127.0.0.1:11434: i/o timeout"
+time=2025-06-30T14:23:20.950+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/model/provider/supported status=200 latency=30029
+time=2025-06-30T14:23:23.794+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/model/provider/supported status=200 latency=6
+time=2025-06-30T14:23:42.601+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/model/check status=200 latency=11481
+time=2025-06-30T14:23:42.916+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/model status=200 latency=1
+time=2025-06-30T14:23:43.224+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/model/list status=200 latency=0
+time=2025-06-30T14:23:43.483+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/knowledge_base/list status=200 latency=0
+time=2025-06-30T14:23:44.358+08:00 level=INFO msg="synced user access time to database" module=repo.pg.user_access update_count=1
+time=2025-06-30T14:23:55.538+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/knowledge_base status=200 latency=26
+time=2025-06-30T14:23:55.855+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/knowledge_base/list status=200 latency=0
+time=2025-06-30T14:23:56.109+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/knowledge_base/detail?id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=4
+time=2025-06-30T14:23:56.225+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=3
+time=2025-06-30T14:24:05.095+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=2
+
+2025/06/30 14:24:05 [31;1m/code/github.com/timdong/PandaWiki/backend/repo/pg/node.go:346 [35;1mrecord not found
+[0m[33m[2.944ms] [34;1m[rows:0][0m SELECT * FROM "kb_releases" WHERE kb_id = '4294b80e-8544-4eb5-80f3-2a8942b10ec8' ORDER BY created_at DESC,"kb_releases"."id" LIMIT 1
+time=2025-06-30T14:24:05.106+08:00 level=ERROR msg="failed to get node list" module=http_base_handler trace_id=86312b2c-5422-4bb2-8966-a2722e15cec2 error="record not found"
+time=2025-06-30T14:24:05.106+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/node/list status=200 latency=4
+time=2025-06-30T14:24:05.119+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=0
+
+2025/06/30 14:24:05 [31;1m/code/github.com/timdong/PandaWiki/backend/repo/pg/node.go:346 [35;1mrecord not found
+[0m[33m[0.412ms] [34;1m[rows:0][0m SELECT * FROM "kb_releases" WHERE kb_id = '4294b80e-8544-4eb5-80f3-2a8942b10ec8' ORDER BY created_at DESC,"kb_releases"."id" LIMIT 1
+time=2025-06-30T14:24:05.122+08:00 level=ERROR msg="failed to get node list" module=http_base_handler trace_id=db54ea2f-6e7a-455d-aef8-e057888d4262 error="record not found"
+time=2025-06-30T14:24:05.122+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/node/list status=200 latency=1
+time=2025-06-30T14:24:07.747+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=1
+
+2025/06/30 14:24:07 [31;1m/code/github.com/timdong/PandaWiki/backend/repo/pg/node.go:346 [35;1mrecord not found
+[0m[33m[0.392ms] [34;1m[rows:0][0m SELECT * FROM "kb_releases" WHERE kb_id = '4294b80e-8544-4eb5-80f3-2a8942b10ec8' ORDER BY created_at DESC,"kb_releases"."id" LIMIT 1
+time=2025-06-30T14:24:07.778+08:00 level=ERROR msg="failed to get node list" module=http_base_handler trace_id=8dfeb07b-a59b-454b-9b39-20806f53dc48 error="record not found"
+time=2025-06-30T14:24:07.778+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/node/list status=200 latency=1
+time=2025-06-30T14:24:11.266+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=0
+time=2025-06-30T14:24:21.152+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/model/list status=200 latency=0
+time=2025-06-30T14:24:21.161+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/knowledge_base/list status=200 latency=0
+time=2025-06-30T14:24:21.172+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/user status=200 latency=0
+time=2025-06-30T14:24:21.194+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/knowledge_base/list status=200 latency=0
+time=2025-06-30T14:24:21.220+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/knowledge_base/detail?id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=0
+time=2025-06-30T14:24:21.505+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=0
+time=2025-06-30T14:24:44.373+08:00 level=INFO msg="synced user access time to database" module=repo.pg.user_access update_count=1
+time=2025-06-30T14:24:47.800+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=1
+time=2025-06-30T14:24:59.378+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=0
+time=2025-06-30T14:25:09.849+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/node status=200 latency=6
+time=2025-06-30T14:25:09.857+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=0
+time=2025-06-30T14:25:29.158+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/node status=200 latency=3
+time=2025-06-30T14:25:29.406+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=0
+time=2025-06-30T14:25:31.868+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/user status=200 latency=0
+time=2025-06-30T14:25:32.167+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/detail?id=0197bf83-1842-7e13-9ee0-9835c3d5703a" status=200 latency=1
+time=2025-06-30T14:25:32.335+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=0
+time=2025-06-30T14:25:44.354+08:00 level=INFO msg="synced user access time to database" module=repo.pg.user_access update_count=1
+time=2025-06-30T14:26:05.249+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=PUT uri=/api/v1/node/detail status=200 latency=2
+time=2025-06-30T14:26:05.571+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/detail?id=0197bf83-1842-7e13-9ee0-9835c3d5703a" status=200 latency=0
+time=2025-06-30T14:26:08.040+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=PUT uri=/api/v1/node/detail status=200 latency=1
+time=2025-06-30T14:26:08.354+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/detail?id=0197bf83-1842-7e13-9ee0-9835c3d5703a" status=200 latency=0
+time=2025-06-30T14:26:08.388+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=0
+time=2025-06-30T14:26:09.844+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/knowledge_base/release status=200 latency=16
+time=2025-06-30T14:26:10.167+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/detail?id=0197bf83-1842-7e13-9ee0-9835c3d5703a" status=200 latency=1
+time=2025-06-30T14:26:14.114+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=1
+time=2025-06-30T14:26:14.127+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/node/list status=200 latency=3
+time=2025-06-30T14:26:14.181+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=1
+time=2025-06-30T14:26:14.186+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/node/list status=200 latency=1
+time=2025-06-30T14:26:16.459+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=1
+time=2025-06-30T14:26:16.463+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/node/list status=200 latency=1
+time=2025-06-30T14:26:19.628+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=1
+time=2025-06-30T14:26:19.632+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/share/v1/node/detail?id=0197bf83-1842-7e13-9ee0-9835c3d5703a" status=200 latency=2
+time=2025-06-30T14:26:26.579+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=1
+time=2025-06-30T14:26:26.590+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/node/list status=200 latency=1
+time=2025-06-30T14:26:29.236+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=1
+time=2025-06-30T14:26:29.447+08:00 level=INFO msg="get related documents from raglite" module=usecase.llm record_count=0
+time=2025-06-30T14:26:29.447+08:00 level=INFO msg="ranked nodes" module=usecase.llm rankedNodesCount=0
+time=2025-06-30T14:26:29.447+08:00 level=INFO msg=documents module=usecase.llm documents=""
+time=2025-06-30T14:26:32.040+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/share/v1/chat/message status=200 latency=2609
+time=2025-06-30T14:26:35.995+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=1
+time=2025-06-30T14:26:36.005+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/node/list status=200 latency=1
+time=2025-06-30T14:26:36.074+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=1
+time=2025-06-30T14:26:36.076+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/share/v1/node/detail?id=0197bf83-1842-7e13-9ee0-9835c3d5703a" status=200 latency=1
+time=2025-06-30T14:26:40.921+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=0
+time=2025-06-30T14:26:44.350+08:00 level=INFO msg="synced user access time to database" module=repo.pg.user_access update_count=1
+time=2025-06-30T14:28:41.068+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/user status=200 latency=1
+time=2025-06-30T14:28:41.379+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/detail?id=0197bf83-1842-7e13-9ee0-9835c3d5703a" status=200 latency=0
+time=2025-06-30T14:28:41.559+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=0
+time=2025-06-30T14:28:44.346+08:00 level=INFO msg="synced user access time to database" module=repo.pg.user_access update_count=1
+time=2025-06-30T14:29:00.875+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/node/summary status=200 latency=3924
+time=2025-06-30T14:29:02.277+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=PUT uri=/api/v1/node/detail status=200 latency=3
+time=2025-06-30T14:29:23.203+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=1
+time=2025-06-30T14:29:25.559+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=1
+time=2025-06-30T14:29:25.570+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/node/list status=200 latency=1
+time=2025-06-30T14:29:25.646+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=1
+time=2025-06-30T14:29:25.648+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/share/v1/node/detail?id=0197bf83-1842-7e13-9ee0-9835c3d5703a" status=200 latency=1
+time=2025-06-30T14:29:25.657+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/node/list status=200 latency=1
+time=2025-06-30T14:29:26.083+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=1
+
+2025/06/30 14:29:26 [32m/code/github.com/timdong/PandaWiki/backend/repo/pg/node.go:371 [33mSLOW SQL >= 200ms
+[0m[31;1m[286.473ms] [33m[rows:1][35m SELECT * FROM "kb_releases" WHERE kb_id = '4294b80e-8544-4eb5-80f3-2a8942b10ec8' ORDER BY created_at DESC,"kb_releases"."id" LIMIT 1[0m
+time=2025-06-30T14:29:26.376+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/share/v1/node/detail?id=0197bf83-1842-7e13-9ee0-9835c3d5703a" status=200 latency=293
+time=2025-06-30T14:29:34.136+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=3
+time=2025-06-30T14:29:34.145+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/node/list status=200 latency=2
+time=2025-06-30T14:29:34.179+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/share/v1/app/web/info status=200 latency=1
+time=2025-06-30T14:29:34.350+08:00 level=INFO msg="get related documents from raglite" module=usecase.llm record_count=0
+time=2025-06-30T14:29:34.350+08:00 level=INFO msg="ranked nodes" module=usecase.llm rankedNodesCount=0
+time=2025-06-30T14:29:34.350+08:00 level=INFO msg=documents module=usecase.llm documents=""
+time=2025-06-30T14:29:37.375+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/share/v1/chat/message status=200 latency=3044
+time=2025-06-30T14:29:40.169+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/user/login status=200 latency=48
+time=2025-06-30T14:29:41.046+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/node/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=3
+time=2025-06-30T14:29:44.343+08:00 level=INFO msg="synced user access time to database" module=repo.pg.user_access update_count=1
+time=2025-06-30T14:29:46.137+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/user/list status=200 latency=1
+time=2025-06-30T14:29:52.057+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=POST uri=/api/v1/model/provider/supported status=200 latency=0
+time=2025-06-30T14:30:07.011+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/model/list status=200 latency=1
+time=2025-06-30T14:30:07.387+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/knowledge_base/list status=200 latency=1
+time=2025-06-30T14:30:26.568+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/knowledge_base/list status=200 latency=0
+time=2025-06-30T14:30:26.978+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/user status=200 latency=1
+time=2025-06-30T14:30:27.402+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/conversation?page=1&per_page=20&kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8&subject=&remote_ip=" status=200 latency=4
+time=2025-06-30T14:30:32.432+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/knowledge_base/list status=200 latency=1
+time=2025-06-30T14:30:32.446+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/user status=200 latency=0
+time=2025-06-30T14:30:32.725+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/knowledge_base/release/list?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8&page=1&per_page=20" status=200 latency=2
+time=2025-06-30T14:30:36.834+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/knowledge_base/list status=200 latency=1
+time=2025-06-30T14:30:36.888+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri=/api/v1/user status=200 latency=0
+time=2025-06-30T14:30:37.178+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/knowledge_base/detail?id=4294b80e-8544-4eb5-80f3-2a8942b10ec8" status=200 latency=0
+
+2025/06/30 14:30:37 [31;1m/code/github.com/timdong/PandaWiki/backend/repo/pg/app.go:56 [35;1mrecord not found
+[0m[33m[0.590ms] [34;1m[rows:0][0m SELECT * FROM "apps" WHERE kb_id = '4294b80e-8544-4eb5-80f3-2a8942b10ec8' AND type = 3 ORDER BY "apps"."id" LIMIT 1
+time=2025-06-30T14:30:37.238+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/app/detail?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8&type=3" status=200 latency=3
+
+2025/06/30 14:30:37 [31;1m/code/github.com/timdong/PandaWiki/backend/repo/pg/app.go:56 [35;1mrecord not found
+[0m[33m[0.528ms] [34;1m[rows:0][0m SELECT * FROM "apps" WHERE kb_id = '4294b80e-8544-4eb5-80f3-2a8942b10ec8' AND type = 4 ORDER BY "apps"."id" LIMIT 1
+time=2025-06-30T14:30:37.245+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/app/detail?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8&type=4" status=200 latency=2
+
+2025/06/30 14:30:37 [31;1m/code/github.com/timdong/PandaWiki/backend/repo/pg/app.go:56 [35;1mrecord not found
+[0m[33m[0.399ms] [34;1m[rows:0][0m SELECT * FROM "apps" WHERE kb_id = '4294b80e-8544-4eb5-80f3-2a8942b10ec8' AND type = 5 ORDER BY "apps"."id" LIMIT 1
+time=2025-06-30T14:30:37.249+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/app/detail?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8&type=5" status=200 latency=1
+time=2025-06-30T14:30:37.258+08:00 level=INFO msg=REQUEST remote_ip=127.0.0.1 method=GET uri="/api/v1/app/detail?kb_id=4294b80e-8544-4eb5-80f3-2a8942b10ec8&type=1" status=200 latency=1
+time=2025-06-30T14:30:44.342+08:00 level=INFO msg="synced user access time to database" module=repo.pg.user_access update_count=1

@@ -90,12 +90,12 @@ func NewConfig() (*Config, error) {
 			Port: 8000,
 		},
 		PG: PGConfig{
-			DSN: "host=panda-wiki-postgres user=panda-wiki password=panda-wiki-secret dbname=panda-wiki port=5432 sslmode=disable TimeZone=Asia/Shanghai",
+			DSN: "host=localhost user=panda-wiki password=panda-wiki-secret dbname=panda-wiki port=5432 sslmode=disable TimeZone=Asia/Shanghai",
 		},
 		MQ: MQConfig{
 			Type: "nats",
 			NATS: NATSConfig{
-				Server:   fmt.Sprintf("nats://%s.13:4222", SUBNET_PREFIX),
+				Server:   "nats://localhost:4222",
 				User:     "panda-wiki",
 				Password: "",
 			},
@@ -103,12 +103,12 @@ func NewConfig() (*Config, error) {
 		RAG: RAGConfig{
 			Provider: "ct",
 			CTRAG: CTRAGConfig{
-				BaseURL: fmt.Sprintf("http://%s.18:8080/api/v1", SUBNET_PREFIX),
+				BaseURL: "http://localhost:8080/api/v1",
 				APIKey:  "sk-1234567890",
 			},
 		},
 		Redis: RedisConfig{
-			Addr:     "panda-wiki-redis:6379",
+			Addr:     "localhost:6379",
 			Password: "",
 		},
 		Auth: AuthConfig{
@@ -116,7 +116,7 @@ func NewConfig() (*Config, error) {
 			JWT:  JWTConfig{Secret: ""},
 		},
 		S3: S3Config{
-			Endpoint:    "panda-wiki-minio:9000",
+			Endpoint:    "localhost:9000",
 			AccessKey:   "s3panda-wiki",
 			SecretKey:   "",
 			MaxFileSize: 20971520, // 20MB
@@ -152,7 +152,7 @@ func NewConfig() (*Config, error) {
 // overrideWithEnv override sensitive info with env variables
 func overrideWithEnv(c *Config) {
 	if env := os.Getenv("POSTGRES_PASSWORD"); env != "" {
-		c.PG.DSN = fmt.Sprintf("host=panda-wiki-postgres user=panda-wiki password=%s dbname=panda-wiki port=5432 sslmode=disable TimeZone=Asia/Shanghai", env)
+		c.PG.DSN = fmt.Sprintf("host=localhost user=panda-wiki password=%s dbname=panda-wiki port=5432 sslmode=disable TimeZone=Asia/Shanghai", env)
 	}
 	if env := os.Getenv("NATS_PASSWORD"); env != "" {
 		c.MQ.NATS.Password = env

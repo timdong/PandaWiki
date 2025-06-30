@@ -189,7 +189,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/handler_v1.ConversationListItems"
+                                            "$ref": "#/definitions/v1.ConversationListItems"
                                         }
                                     }
                                 }
@@ -3496,20 +3496,6 @@ const docTemplate = `{
                 }
             }
         },
-        "handler_v1.ConversationListItems": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/domain.ConversationListItem"
-                    }
-                },
-                "total": {
-                    "type": "integer"
-                }
-            }
-        },
         "schema.RoleType": {
             "type": "string",
             "enum": [
@@ -3524,6 +3510,20 @@ const docTemplate = `{
                 "System",
                 "Tool"
             ]
+        },
+        "v1.ConversationListItems": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.ConversationListItem"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
         }
     }
 }`
