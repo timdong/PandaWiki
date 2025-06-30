@@ -1,7 +1,11 @@
 INFO:__main__:RAG Service started on http://localhost:8080
 INFO:__main__:Health check: http://localhost:8080/health
 INFO:__main__:Models API: http://localhost:8080/api/v1/models
-127.0.0.1 - - [30/Jun/2025 18:09:49] "GET /health HTTP/1.1" 200 -
-127.0.0.1 - - [30/Jun/2025 18:09:51] "GET /api/v1/models HTTP/1.1" 200 -
+127.0.0.1 - - [30/Jun/2025 18:44:09] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [30/Jun/2025 18:44:16] "GET /api/v1/models HTTP/1.1" 200 -
 INFO:__main__:Adding model: {'provider': 'openai-compatible-api', 'name': 'bge-m3', 'task_type': 'embedding', 'api_base': 'https://model-square.app.baizhi.cloud/v1', 'api_key': 'sk-r8tmBtcU1JotPDPnlgZLOY4Z6Dbb7FufcSeTkFpRWA5v4Llr', 'max_tokens': 8192, 'is_default': True, 'enabled': True, 'config': {'max_context': 8192, 'chunk_size': 1024, 'chunk_overlap': 128, 'dimension': 1536}}
-127.0.0.1 - - [30/Jun/2025 18:09:51] "POST /api/v1/models HTTP/1.1" 200 -
+127.0.0.1 - - [30/Jun/2025 18:44:16] "POST /api/v1/models HTTP/1.1" 200 -
+INFO:__main__:Received RAG request: {'url': 'http://localhost:9000/static-file/4294b80e-8544-4eb5-80f3-2a8942b10ec8/06ff807b-44ce-49a6-80e2-bbab47e088cd.md', 'kb_id': '4294b80e-8544-4eb5-80f3-2a8942b10ec8'}
+127.0.0.1 - - [30/Jun/2025 18:45:21] "POST /api/v1/scrape HTTP/1.1" 200 -
+INFO:__main__:Received RAG request: {'url': 'http://localhost:9000/static-file/4294b80e-8544-4eb5-80f3-2a8942b10ec8/cf9160dc-c30b-40da-9e10-a5c18c3c4c6d.md', 'kb_id': '4294b80e-8544-4eb5-80f3-2a8942b10ec8'}
+127.0.0.1 - - [30/Jun/2025 18:47:09] "POST /api/v1/scrape HTTP/1.1" 200 -

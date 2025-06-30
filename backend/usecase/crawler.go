@@ -34,11 +34,11 @@ func NewCrawlerUsecase(logger *log.Logger) (*CrawlerUsecase, error) {
 }
 
 func (u *CrawlerUsecase) ScrapeURL(ctx context.Context, targetURL string, kbID string) (*domain.ScrapeResp, error) {
-	crawleServiceURL := "http://panda-wiki-crawler:8080/api/v1/scrape"
+	crawleServiceURL := "http://localhost:8080/api/v1/scrape"
 
 	// for uploaded file key
 	if strings.HasPrefix(targetURL, "/static-file") {
-		targetURL = "https://panda-wiki-nginx:8080" + targetURL
+		targetURL = "http://localhost:9000" + targetURL
 	}
 
 	reqBody := domain.ScrapeRequest{
