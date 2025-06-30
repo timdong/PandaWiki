@@ -32,7 +32,10 @@ mkdir -p logs
 # 创建基础的Caddyfile配置
 cat > /tmp/Caddyfile << 'EOF'
 {
-    admin unix//app/run/caddy-admin.sock
+    admin {
+        listen unix//app/run/caddy-admin.sock
+        origins ["localhost", "127.0.0.1", "unix"]
+    }
     auto_https off
 }
 

@@ -1,450 +1,199 @@
 #!/bin/bash
 
-# PandaWiki 统一启动脚本
-# 按照依赖顺序启动所有必要的服务
+# PandaWiki 完整服务启动脚本
+# 启动所有必要的服务：Docker Compose、前端、后端、RAG、Caddy
 
-set -e  # 遇到错误立即退出
+set -e
 
-# 颜色定义
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+echo "=== PandaWiki 完整服务启动脚本 ==="
 
-# 日志函数
-log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
+# 设置环境变量
+export ADMIN_PASSWORD=admin123456
+export JWT_SECRET=your-jwt-secret-key-here
+export POSTGRES_PASSWORD=panda-wiki-secret
+export S3_SECRET_KEY=minio-secret-key
+export NATS_PASSWORD=
+export REDIS_PASSWORD=
 
-log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
+echo "✅ 环境变量设置完成"
 
-log_warn() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
-}
+# 创建必要的目录
+mkdir -p logs pids /app/run
 
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
+# 检查必要工具
+echo "🔍 检查必要工具..."
+command -v docker >/dev/null 2>&1 || { echo "❌ Docker 未安装，请先安装 Docker"; exit 1; }
+command -v docker-compose >/dev/null 2>&1 || command -v docker compose >/dev/null 2>&1 || { echo "❌ Docker Compose 未安装"; exit 1; }
+command -v node >/dev/null 2>&1 || { echo "❌ Node.js 未安装，请先安装 Node.js"; exit 1; }
+command -v go >/dev/null 2>&1 || { echo "❌ Go 未安装，请先安装 Go"; exit 1; }
+command -v python3 >/dev/null 2>&1 || { echo "❌ Python3 未安装，请先安装 Python3"; exit 1; }
 
-# 检查端口是否被占用
-check_port() {
-    local port=$1
-    if netstat -tlnp | grep -q ":$port "; then
-        return 0  # 端口被占用
-    else
-        return 1  # 端口可用
-    fi
-}
+echo "✅ 工具检查完成"
 
-# 等待端口启动
-wait_for_port() {
-    local port=$1
-    local service_name=$2
-    local max_wait=${3:-30}
-    
-    log_info "等待 $service_name 启动在端口 $port..."
-    
-    for i in $(seq 1 $max_wait); do
-        if check_port $port; then
-            log_success "$service_name 已启动在端口 $port"
-            return 0
-        fi
-        sleep 1
-    done
-    
-    log_error "$service_name 启动超时（端口 $port）"
-    return 1
-}
-
-# 检查必要的命令
-check_requirements() {
-    log_info "检查系统要求..."
-    
-    local missing_commands=()
-    
-    # 检查Node.js
-    if ! command -v node &> /dev/null; then
-        missing_commands+=("node")
-    fi
-    
-    # 检查pnpm
-    if ! command -v pnpm &> /dev/null; then
-        missing_commands+=("pnpm")
-    fi
-    
-    # 检查Go
-    if ! command -v go &> /dev/null; then
-        missing_commands+=("go")
-    fi
-    
-    # 检查caddy
-    if ! command -v caddy &> /dev/null; then
-        missing_commands+=("caddy")
-    fi
-    
-    # 检查Python（用于literag）
-    if ! command -v python3 &> /dev/null; then
-        missing_commands+=("python3")
-    fi
-    
-    if [ ${#missing_commands[@]} -ne 0 ]; then
-        log_error "缺少必要的命令: ${missing_commands[*]}"
-        log_error "请先安装这些依赖"
+# 检查 PostgreSQL
+echo "🐘 检查 PostgreSQL..."
+if [ -f "check-postgres.sh" ]; then
+    chmod +x check-postgres.sh
+    if ! ./check-postgres.sh; then
+        echo "❌ PostgreSQL 配置有问题，请先解决数据库问题"
+        echo "💡 运行: ./check-postgres.sh 获取详细信息"
+        echo "🧹 如果遇到重复键问题，运行: ./clean-database.sh"
+        echo "📚 参考: README_PostgreSQL.md"
         exit 1
     fi
-    
-    log_success "系统要求检查完成"
-}
+else
+    echo "⚠️  PostgreSQL 检查脚本不存在，请确保数据库已正确配置"
+fi
 
-# 启动依赖服务（Docker容器）
-start_dependencies() {
-    log_info "启动依赖服务..."
-    
-    # 检查docker-compose文件是否存在
-    if [ -f "docker-compose.dev.yml" ]; then
-        log_info "启动Docker依赖服务（Redis, NATS, MinIO）..."
-        log_info "注意：PostgreSQL 需要您手动启动（使用现有的Windows PostgreSQL 17安装）"
-        docker-compose -f docker-compose.dev.yml up -d
-        
-        # 等待依赖服务启动
-        log_info "等待依赖服务启动完成..."
-        sleep 10
-        
-        # 检查服务状态
-        docker-compose -f docker-compose.dev.yml ps
-        log_success "依赖服务启动完成"
-    else
-        log_warn "docker-compose.dev.yml 不存在，跳过Docker依赖服务启动"
-        log_warn "请确保Redis、NATS、MinIO等服务已手动启动"
-    fi
-}
+# 1. 启动 Docker Compose 服务 (Redis, NATS, MinIO)
+echo "🐳 启动 Docker Compose 服务..."
+if command -v docker-compose >/dev/null 2>&1; then
+    docker-compose -f docker-compose.dev.yml up -d
+else
+    docker compose -f docker-compose.dev.yml up -d
+fi
 
-# 启动RAG服务
-start_rag_service() {
-    log_info "启动RAG服务（literag）..."
-    
-    if [ -f "raglite-service.py" ]; then
-        # 检查端口8080是否被占用
-        if check_port 8080; then
-            log_warn "端口8080已被占用，跳过RAG服务启动"
-        else
-            log_info "启动Python RAG服务..."
-            nohup python3 raglite-service.py > logs/raglite.log 2>&1 &
-            RAG_PID=$!
-            echo $RAG_PID > pids/raglite.pid
-            
-            if wait_for_port 8080 "RAG服务" 30; then
-                log_success "RAG服务已启动（PID: $RAG_PID）"
-            else
-                log_error "RAG服务启动失败"
-                return 1
-            fi
-        fi
-    else
-        log_warn "raglite-service.py 不存在，跳过RAG服务启动"
-    fi
-}
+echo "⏳ 等待 Docker 服务启动..."
+sleep 10
 
-# 启动Caddy代理服务
-start_caddy() {
-    log_info "启动Caddy代理服务..."
-    
-    # 检查端口80是否被占用
-    if check_port 80; then
-        log_warn "端口80已被占用，跳过Caddy启动"
-    else
-        log_info "启动Caddy服务..."
-        ./start-caddy.sh &
-        CADDY_START_PID=$!
-        
-        if wait_for_port 80 "Caddy服务" 15; then
-            log_success "Caddy服务已启动"
-            
-            # 等待admin socket创建
-            sleep 2
-            if [ -S "/app/run/caddy-admin.sock" ]; then
-                log_success "Caddy管理API已就绪"
-            else
-                log_warn "Caddy管理API可能未就绪"
-            fi
-        else
-            log_error "Caddy服务启动失败"
-            return 1
-        fi
-    fi
-}
+# 检查 Docker 服务状态
+echo "🔍 检查 Docker 服务状态..."
+if command -v docker-compose >/dev/null 2>&1; then
+    docker-compose -f docker-compose.dev.yml ps
+else
+    docker compose -f docker-compose.dev.yml ps
+fi
 
-# 启动后端API服务
-start_backend() {
-    log_info "启动后端API服务..."
-    
-    # 检查端口8000是否被占用
-    if check_port 8000; then
-        log_warn "端口8000已被占用，跳过后端API启动"
-    else
-        # 进入后端目录
-        cd backend
-        
-        # 加载环境变量
-        if [ -f "../env.dev" ]; then
-            source ../env.dev
-            log_info "环境变量已加载"
-        else
-            log_warn "env.dev文件不存在，使用默认配置"
-        fi
-        
-        # 设置Go代理
-        export GOPROXY=https://goproxy.cn,direct
-        export PATH=$PATH:/root/go/bin
-        
-        # 生成代码
-        log_info "生成Go代码..."
-        make generate
-        
-        # 运行数据库迁移
-        log_info "运行数据库迁移..."
-        # 检查配置文件是否存在
-        if [ ! -f "config/config.local.yml" ]; then
-            log_warn "config.local.yml 不存在，跳过数据库迁移"
-        else
-            cp config/config.local.yml config.yml
-            log_info "准备运行数据库迁移..."
-            log_info "请确保您的PostgreSQL 17已启动，并且数据库连接配置正确"
-            # 尝试运行数据库迁移
-            if go run cmd/migrate/main.go cmd/migrate/wire_gen.go; then
-                log_success "数据库迁移执行成功"
-            else
-                log_warn "数据库迁移失败，请检查PostgreSQL连接和配置"
-                log_warn "您可能需要手动创建数据库和用户，或调整配置文件"
-            fi
-        fi
-        
-        # 启动API服务
-        log_info "启动Go API服务..."
-        nohup go run cmd/api/main.go cmd/api/wire_gen.go > ../logs/backend.log 2>&1 &
-        BACKEND_PID=$!
-        echo $BACKEND_PID > ../pids/backend.pid
-        
-        cd ..
-        
-        if wait_for_port 8000 "后端API" 30; then
-            log_success "后端API已启动（PID: $BACKEND_PID）"
-        else
-            log_error "后端API启动失败"
-            return 1
-        fi
-    fi
-}
-
-# 启动管理后台
-start_admin() {
-    log_info "启动管理后台..."
-    
-    # 检查端口5173是否被占用
-    if check_port 5173; then
-        log_warn "端口5173已被占用，跳过管理后台启动"
-    else
-        cd web/admin
-        
-        # 检查依赖是否已安装
-        if [ ! -d "node_modules" ]; then
-            log_info "安装管理后台依赖..."
-            pnpm install
-        fi
-        
-        # 启动开发服务器
-        log_info "启动管理后台开发服务器..."
-        nohup pnpm dev > ../../logs/admin.log 2>&1 &
-        ADMIN_PID=$!
-        echo $ADMIN_PID > ../../pids/admin.pid
-        
-        cd ../..
-        
-        if wait_for_port 5173 "管理后台" 30; then
-            log_success "管理后台已启动（PID: $ADMIN_PID）"
-        else
-            log_error "管理后台启动失败"
-            return 1
-        fi
-    fi
-}
-
-# 启动用户前台
-start_frontend() {
-    log_info "启动用户前台..."
-    
-    # 检查端口3010是否被占用
-    if check_port 3010; then
-        log_warn "端口3010已被占用，跳过用户前台启动"
-    else
-        cd web/app
-        
-        # 检查依赖是否已安装
-        if [ ! -d "node_modules" ]; then
-            log_info "安装用户前台依赖..."
-            pnpm install
-        fi
-        
-        # 启动开发服务器（带环境变量）
-        log_info "启动用户前台开发服务器..."
-        nohup env NEXT_PUBLIC_API_URL=http://localhost:8000 pnpm dev > ../../logs/frontend.log 2>&1 &
-        FRONTEND_PID=$!
-        echo $FRONTEND_PID > ../../pids/frontend.pid
-        
-        cd ../..
-        
-        if wait_for_port 3010 "用户前台" 30; then
-            log_success "用户前台已启动（PID: $FRONTEND_PID）"
-        else
-            log_error "用户前台启动失败"
-            return 1
-        fi
-    fi
-}
-
-# 配置8089端口代理
-setup_8089_proxy() {
-    log_info "配置8089端口代理..."
-    
-    # 等待Caddy管理API就绪
-    sleep 2
-    
-    # 创建8089端口配置
-    cat > /tmp/8089-config.json << 'EOF'
+# 2. 启动 Caddy 服务 (为后端提供反向代理支持)
+echo "🌐 启动 Caddy 服务..."
+if command -v caddy >/dev/null 2>&1; then
+    # 创建 Caddy 配置
+    cat > /tmp/Caddyfile << 'EOF'
 {
-  "listen": [":8089"],
-  "routes": [
-    {
-      "handle": [
-        {
-          "handler": "reverse_proxy",
-          "upstreams": [
-            {"dial": "localhost:3010"}
-          ]
-        }
-      ]
-    }
-  ]
+    admin unix//app/run/caddy-admin.sock
+    auto_https off
+}
+
+:80 {
+    respond "PandaWiki Caddy Server is running" 200
 }
 EOF
     
-    # 应用配置到Caddy
-    if curl -s --unix-socket /app/run/caddy-admin.sock "http://localhost/config/apps/http/servers/port8089" -X PUT -H "Content-Type: application/json" -d @/tmp/8089-config.json > /dev/null; then
-        log_success "8089端口代理配置成功"
-        
-        # 验证8089端口
-        sleep 2
-        if check_port 8089; then
-            log_success "8089端口已可用"
-        else
-            log_warn "8089端口配置可能未生效"
-        fi
+    caddy run --config /tmp/Caddyfile --adapter caddyfile > logs/caddy.log 2>&1 &
+    echo $! > pids/caddy.pid
+    echo "✅ Caddy 服务已启动 (PID: $(cat pids/caddy.pid))"
+    sleep 2
+else
+    echo "⚠️  Caddy 未安装，跳过 Caddy 服务启动"
+    echo "💡 如果需要完整功能，请安装 Caddy: https://caddyserver.com/docs/install"
+fi
+
+# 3. 启动 RAG 服务
+echo "🤖 启动 RAG 服务..."
+python3 raglite-service.py > logs/raglite.log 2>&1 &
+echo $! > pids/raglite.pid
+echo "✅ RAG 服务已启动 (PID: $(cat pids/raglite.pid))"
+
+# 等待 RAG 服务启动
+sleep 3
+
+# 检查 RAG 服务是否正常运行
+if curl -s http://localhost:8080/health > /dev/null; then
+    echo "✅ RAG 服务健康检查通过"
+else
+    echo "⚠️  警告：RAG 服务可能未正常启动"
+fi
+
+# 4. 启动后端服务
+echo "🔧 启动后端 API 服务..."
+cd backend
+go run ./cmd/api > ../logs/backend.log 2>&1 &
+echo $! > ../pids/backend.pid
+cd ..
+echo "✅ 后端服务已启动 (PID: $(cat pids/backend.pid))"
+
+# 等待后端服务启动
+sleep 8
+
+# 检查后端服务是否正常运行 (修复健康检查)
+echo "🔍 检查后端服务健康状态..."
+for i in {1..5}; do
+    if curl -s http://localhost:8000/api/v1/model/list > /dev/null 2>&1; then
+        echo "✅ 后端服务健康检查通过"
+        break
     else
-        log_error "8089端口代理配置失败"
+        echo "⏳ 等待后端服务启动... ($i/5)"
+        sleep 3
     fi
-    
-    # 清理临时文件
-    rm -f /tmp/8089-config.json
-}
+    if [ $i -eq 5 ]; then
+        echo "⚠️  警告：后端服务可能需要更多时间启动，请检查日志: tail -f logs/backend.log"
+    fi
+done
 
-# 显示服务状态
-show_status() {
-    log_info "服务状态总览："
-    echo ""
-    echo "🌐 访问地址："
-    echo "   管理后台:     http://localhost:5173/"
-    echo "   用户前台:     http://localhost:3010/"
-    echo "   8089端口:     http://localhost:8089/"
-    echo "   后端API:      http://localhost:8000/"
-    echo "   Caddy基础:    http://localhost:80/"
-    echo "   RAG服务:      http://localhost:8080/"
-    echo ""
-    echo "📊 端口状态："
-    
-    # 检查各个端口
-    ports=(80 3010 5173 8000 8080 8089)
-    port_names=("Caddy" "前端App" "管理后台" "后端API" "RAG服务" "8089代理")
-    
-    for i in "${!ports[@]}"; do
-        port=${ports[$i]}
-        name=${port_names[$i]}
-        if check_port $port; then
-            echo -e "   端口 $port ($name): ${GREEN}✅ 运行中${NC}"
-        else
-            echo -e "   端口 $port ($name): ${RED}❌ 未运行${NC}"
-        fi
-    done
-    
-    echo ""
-    echo "📁 日志文件："
-    echo "   后端API:      logs/backend.log"
-    echo "   管理后台:     logs/admin.log"
-    echo "   用户前台:     logs/frontend.log"
-    echo "   RAG服务:      logs/raglite.log"
-    echo ""
-    echo "📝 进程ID文件："
-    echo "   后端API:      pids/backend.pid"
-    echo "   管理后台:     pids/admin.pid"
-    echo "   用户前台:     pids/frontend.pid"
-    echo "   RAG服务:      pids/raglite.pid"
-    echo ""
-    echo "🛑 停止服务: ./stop-all.sh"
-}
+# 5. 启动前端管理界面
+echo "🎨 启动管理界面..."
+cd web/admin
+# 检查是否有 node_modules
+if [ ! -d "node_modules" ]; then
+    echo "📦 首次运行，安装依赖..."
+    npm install
+fi
+npm run dev > ../../logs/admin.log 2>&1 &
+echo $! > ../../pids/admin.pid
+cd ../..
+echo "✅ 管理界面已启动 (PID: $(cat pids/admin.pid))"
 
-# 创建必要的目录
-create_directories() {
-    mkdir -p logs
-    mkdir -p pids
-    mkdir -p /app/run
-}
+# 6. 启动前端用户界面
+echo "🌐 启动用户界面..."
+cd web/app
+# 检查是否有 node_modules
+if [ ! -d "node_modules" ]; then
+    echo "📦 首次运行，安装依赖..."
+    npm install
+fi
+# 设置正确的API URL环境变量
+export NEXT_PUBLIC_API_URL=http://localhost:8000
+npm run dev > ../../logs/app.log 2>&1 &
+echo $! > ../../pids/app.pid
+cd ../..
+echo "✅ 用户界面已启动 (PID: $(cat pids/app.pid))"
 
-# 主函数
-main() {
-    echo "🐼 PandaWiki 统一启动脚本"
-    echo "================================="
-    
-    # 创建必要目录
-    create_directories
-    
-    # 检查系统要求
-    check_requirements
-    
-    # 按依赖顺序启动服务
-    log_info "开始启动服务..."
-    
-    # 1. 启动依赖服务（Docker）
-    start_dependencies
-    
-    # 2. 启动RAG服务
-    start_rag_service
-    
-    # 3. 启动Caddy代理
-    start_caddy
-    
-    # 4. 启动后端API
-    start_backend
-    
-    # 5. 启动管理后台
-    start_admin
-    
-    # 6. 启动用户前台
-    start_frontend
-    
-    # 7. 配置8089端口代理
-    setup_8089_proxy
-    
-    # 显示最终状态
-    echo ""
-    log_success "🎉 所有服务启动完成！"
-    echo ""
-    show_status
-}
+# 等待前端服务启动
+sleep 8
 
-# 信号处理
-trap 'log_error "启动过程被中断"; exit 1' INT TERM
-
-# 运行主函数
-main "$@" 
+echo ""
+echo "🎉 === 所有服务启动完成 ==="
+echo ""
+echo "📋 服务信息："
+echo "┌─────────────────────────────────────────────┐"
+echo "│  🐳 基础服务 (Docker Compose)              │"
+echo "│  ├─ Redis:       localhost:6379            │"
+echo "│  ├─ NATS:        localhost:4222            │"
+echo "│  ├─ MinIO API:   localhost:9000            │"
+echo "│  └─ MinIO Web:   localhost:9001            │"
+echo "│                                             │"
+echo "│  🔧 应用服务                               │"
+echo "│  ├─ Caddy:       localhost:80 (如已安装)   │"
+echo "│  ├─ RAG API:     http://localhost:8080     │"
+echo "│  ├─ 后端 API:    http://localhost:8000     │"
+echo "│  ├─ 管理界面:    http://localhost:5173     │"
+echo "│  └─ 用户界面:    http://localhost:3010     │"
+echo "└─────────────────────────────────────────────┘"
+echo ""
+echo "👤 默认管理员账户:"
+echo "   用户名: admin"
+echo "   密码:   admin123456"
+echo ""
+echo "📝 常用命令:"
+echo "   停止服务: ./stop-all.sh"
+echo "   查看日志: tail -f logs/*.log"
+echo "   服务状态: ./status.sh"
+echo "   检查数据库: ./check-postgres.sh"
+echo "   清理数据库: ./clean-database.sh"
+echo ""
+echo "⚠️  注意事项:"
+echo "   - 首次启动可能需要较长时间"
+echo "   - 如果端口冲突，前端端口可能自动调整"
+echo "   - 如果遇到重复键错误，请运行数据库清理脚本"
+echo "   - 确保 PostgreSQL 数据库已启动并配置正确"
+echo "" 

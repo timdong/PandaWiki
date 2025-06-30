@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"maps"
@@ -91,24 +90,27 @@ func (r *KnowledgeBaseRepository) SyncKBAccessSettingsToCaddy(ctx context.Contex
 	socketPath := r.config.CaddyAPI
 	// sync kb to caddy
 	// create server for each port
-	subnetPrefix := r.config.SubnetPrefix
-	if subnetPrefix == "" {
-		subnetPrefix = "169.254.15"
-	}
-	api := fmt.Sprintf("%s.2:8000", subnetPrefix)
-	app := fmt.Sprintf("%s.112:3010", subnetPrefix)
-	staticFile := fmt.Sprintf("%s.12:9000", subnetPrefix) // minio
+	// subnetPrefix := r.config.SubnetPrefix
+	// if subnetPrefix == "" {
+	// 	subnetPrefix = "169.254.15"
+	// }
+	// api := fmt.Sprintf("%s.2:8000", subnetPrefix)
+	// app := fmt.Sprintf("%s.112:3010", subnetPrefix)
+	// staticFile := fmt.Sprintf("%s.12:9000", subnetPrefix) // minio
+	api := "localhost:8000"
+	app := "localhost:3010"
+	staticFile := "localhost:9000" // minio
 	servers := make(map[string]any, 0)
 	for port, hostKBMap := range portHostKBMap {
 		server := map[string]any{
 			"listen": []string{port},
 			"routes": []map[string]any{},
-			"trusted_proxies": map[string]any{
-				"source": "static",
-				"ranges": []string{
-					"192.168.0.0/16",
-				},
-			},
+			// "trusted_proxies": map[string]any{
+			// 	"source": "static",
+			// 	"ranges": []string{
+			// 		"192.168.0.0/16",
+			// 	},
+			// },
 		}
 		if _, ok := httpPorts[port]; ok {
 			server["automatic_https"] = map[string]any{
@@ -298,16 +300,17 @@ func (r *KnowledgeBaseRepository) CreateKnowledgeBase(ctx context.Context, kb *d
 			Find(&kbs).Error; err != nil {
 			return err
 		}
-		if len(kbs) > 1 {
-			return errors.New("kb is too many")
-		}
+		// 允许创建更多知识库，移除数量限制
+		// if len(kbs) > 1 {
+		//	return errors.New("kb is too many")
+		// }
 
 		if err := r.checkUniquePortHost(kbs); err != nil {
 			return err
 		}
 		if err := r.SyncKBAccessSettingsToCaddy(ctx, kbs); err != nil {
 			r.logger.Error("failed to sync kb access settings to caddy", "error", err)
-			return err
+			// 忽略 Caddy 同步错误，不中断知识库创建流程
 		}
 		type AppBtn struct {
 			ID       string `json:"id"`
@@ -427,7 +430,8 @@ func (r *KnowledgeBaseRepository) UpdateKnowledgeBase(ctx context.Context, req *
 			return err
 		}
 		if err := r.SyncKBAccessSettingsToCaddy(ctx, kbs); err != nil {
-			return fmt.Errorf("failed to sync kb access settings to caddy: %w", err)
+			r.logger.Error("failed to sync kb access settings to caddy", "error", err)
+			// 忽略 Caddy 同步错误，不中断知识库更新流程
 		}
 		return nil
 	})
@@ -460,7 +464,8 @@ func (r *KnowledgeBaseRepository) DeleteKnowledgeBase(ctx context.Context, kbID 
 			return err
 		}
 		if err := r.SyncKBAccessSettingsToCaddy(ctx, kbs); err != nil {
-			return fmt.Errorf("failed to sync kb access settings to caddy: %w", err)
+			r.logger.Error("failed to sync kb access settings to caddy", "error", err)
+			// 忽略 Caddy 同步错误，不中断知识库删除流程
 		}
 		return nil
 	})

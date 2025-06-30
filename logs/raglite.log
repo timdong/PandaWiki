@@ -1,15 +1,7 @@
 INFO:__main__:RAG Service started on http://localhost:8080
 INFO:__main__:Health check: http://localhost:8080/health
 INFO:__main__:Models API: http://localhost:8080/api/v1/models
-127.0.0.1 - - [30/Jun/2025 14:18:43] "GET /health HTTP/1.1" 200 -
-127.0.0.1 - - [30/Jun/2025 14:18:44] "GET /api/v1/models HTTP/1.1" 200 -
+127.0.0.1 - - [30/Jun/2025 18:09:49] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [30/Jun/2025 18:09:51] "GET /api/v1/models HTTP/1.1" 200 -
 INFO:__main__:Adding model: {'provider': 'openai-compatible-api', 'name': 'bge-m3', 'task_type': 'embedding', 'api_base': 'https://model-square.app.baizhi.cloud/v1', 'api_key': 'sk-r8tmBtcU1JotPDPnlgZLOY4Z6Dbb7FufcSeTkFpRWA5v4Llr', 'max_tokens': 8192, 'is_default': True, 'enabled': True, 'config': {'max_context': 8192, 'chunk_size': 1024, 'chunk_overlap': 128, 'dimension': 1536}}
-127.0.0.1 - - [30/Jun/2025 14:18:44] "POST /api/v1/models HTTP/1.1" 200 -
-127.0.0.1 - - [30/Jun/2025 14:19:24] "GET /api/v1/models HTTP/1.1" 200 -
-INFO:__main__:Received RAG request: {'name': '18c5ee82-f276-44af-872d-fd2c558614f6', 'parser_config': {}}
-127.0.0.1 - - [30/Jun/2025 14:23:55] "POST /api/v1/datasets HTTP/1.1" 200 -
-INFO:__main__:Received RAG request: {'question': 'echo', 'dataset_ids': [''], 'top_k': 10}
-127.0.0.1 - - [30/Jun/2025 14:26:29] "POST /api/v1/retrieval HTTP/1.1" 200 -
-INFO:__main__:Received RAG request: {'question': 'testdb', 'dataset_ids': [''], 'top_k': 10}
-127.0.0.1 - - [30/Jun/2025 14:29:34] "POST /api/v1/retrieval HTTP/1.1" 200 -
-127.0.0.1 - - [30/Jun/2025 14:29:40] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [30/Jun/2025 18:09:51] "POST /api/v1/models HTTP/1.1" 200 -

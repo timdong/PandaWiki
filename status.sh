@@ -50,7 +50,7 @@ done
 echo ""
 echo "📁 进程ID文件状态："
 
-pid_files=("pids/backend.pid" "pids/admin.pid" "pids/frontend.pid" "pids/raglite.pid")
+pid_files=("pids/backend.pid" "pids/admin.pid" "pids/app.pid" "pids/raglite.pid")
 pid_names=("后端API" "管理后台" "用户前台" "RAG服务")
 
 for i in "${!pid_files[@]}"; do
@@ -79,7 +79,7 @@ echo "   RAG服务:      http://localhost:8080/"
 
 echo ""
 echo "📁 日志文件："
-log_files=("logs/backend.log" "logs/admin.log" "logs/frontend.log" "logs/raglite.log")
+log_files=("logs/backend.log" "logs/admin.log" "logs/app.log" "logs/raglite.log")
 for log_file in "${log_files[@]}"; do
     if [ -f "$log_file" ]; then
         size=$(du -h "$log_file" | cut -f1)

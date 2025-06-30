@@ -57,13 +57,13 @@ SUCCESS    用户名: admin
 SUCCESS    密码: **********************
 ```
 
-使用浏览器打开上述内容中的 “访问地址”，你将看到 PandaWiki 的控制台登录入口，使用上述内容中的 “用户名” 和 “密码” 登录即可。
+使用浏览器打开上述内容中的 "访问地址"，你将看到 PandaWiki 的控制台登录入口，使用上述内容中的 "用户名" 和 "密码" 登录即可。
 
 ### 配置 AI 模型
 
 > PandaWiki 是由 AI 大模型驱动的 Wiki 系统，在未配置大模型的情况下 AI 创作、AI 问答、AI 搜索 等功能无法正常使用。
 > 
-首次登录时会提示需要先配置 AI 模型，根据下方图片配置 “Chat 模型”。
+首次登录时会提示需要先配置 AI 模型，根据下方图片配置 "Chat 模型"。
 
 <img src="/images/modelconfig.png" width="800" />
 
@@ -72,9 +72,9 @@ SUCCESS    密码: **********************
 
 ### 创建知识库
 
-一切配置就绪后，你需要先创建一个 “知识库”。
+一切配置就绪后，你需要先创建一个 "知识库"。
 
-“知识库” 是一组文档的集合，PandaWiki 将会根据知识库中的文档，为不同的知识库分别创建 “Wiki 网站”。
+"知识库" 是一组文档的集合，PandaWiki 将会根据知识库中的文档，为不同的知识库分别创建 "Wiki 网站"。
 
 <img src="/images/createkb.png" width="800" />
 
@@ -110,3 +110,211 @@ SUCCESS    密码: **********************
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=chaitin/PandaWiki&type=Date)](https://www.star-history.com/#chaitin/PandaWiki&Date)
+
+## 🚀 快速启动
+
+### 环境要求
+- **Go 1.21+** - 后端服务
+- **Node.js 18+** - 前端服务
+- **PostgreSQL 13+** - 数据库
+- **Python 3.8+** - RAG服务
+- **Docker & Docker Compose** - 基础服务
+
+### 一键启动（推荐）
+
+```bash
+# 启动所有服务（包含完整检查）
+./start-all.sh
+
+# 停止所有服务
+./stop-all.sh
+```
+
+#### 首次运行说明
+
+1. **数据库检查**: 脚本会自动检查PostgreSQL配置
+2. **依赖安装**: 前端服务会自动安装npm依赖
+3. **服务启动**: 按依赖顺序启动所有服务
+
+### 完整服务架构
+
+```
+🏗️ PandaWiki 服务架构
+├── 🐳 基础服务 (Docker Compose)
+│   ├── Redis (localhost:6379)          # 缓存
+│   ├── NATS (localhost:4222)           # 消息队列  
+│   ├── MinIO API (localhost:9000)      # 对象存储
+│   └── MinIO Web (localhost:9001)      # 存储控制台
+├── 🔧 应用服务
+│   ├── RAG API (localhost:8080)        # RAG服务
+│   ├── 后端API (localhost:8000)        # Go后端
+│   ├── 管理界面 (localhost:5173)        # React管理界面
+│   └── 用户界面 (localhost:3010)        # Next.js用户界面
+└── 🐘 数据库
+    └── PostgreSQL                      # 主数据库
+```
+
+### 服务地址
+- **后端API**: http://localhost:8000
+- **RAG服务**: http://localhost:8080
+- **管理界面**: http://localhost:5173 (端口可能自动调整)
+- **用户界面**: http://localhost:3010
+- **MinIO控制台**: http://localhost:9001
+
+### 默认管理员账户
+- **用户名**: `admin`
+- **密码**: `admin123456`
+
+## 🎉 新功能：多知识库支持
+
+PandaWiki现在支持创建和管理**多个知识库**，每个知识库拥有独立的访问端口和配置：
+
+### ✨ 主要特性
+- 🗂️ **无限制知识库创建** - 移除了之前的2个知识库限制
+- 🌐 **独立访问端口** - 每个知识库可配置专属端口 (如8089、8090等)
+- 🔄 **自动代理配置** - Caddy自动为新知识库配置反向代理
+- 🛠️ **完善的管理工具** - 新增Caddy管理脚本和前端修复工具
+
+### 📋 使用方法
+1. **创建知识库**：在管理界面创建新知识库并配置访问端口
+2. **访问知识库**：通过配置的端口访问知识库 (如 http://localhost:8089)
+3. **管理服务**：使用 `./caddy-manager.sh` 管理代理服务
+
+### 🔧 相关脚本
+- `./caddy-manager.sh` - Caddy服务管理 (启动/停止/状态/验证)
+- `./restart-frontend.sh` - 修复前端API连接问题
+- `./start-all.sh` - 一键启动所有服务(已更新支持多端口)
+
+## 📝 最近修复的问题 (2025-06-30)
+
+### ✅ 已修复
+1. **知识库数量限制** - 移除"kb is too many"错误，支持创建多个知识库
+2. **知识库端口访问问题** - 修复8089、8090等端口的404和连接错误
+3. **前端API连接错误** - 修复用户前台连接错误API地址的问题
+4. **Caddy配置同步** - 完善动态配置管理和错误处理
+5. **服务停止脚本** - 修复stop-all.sh无法完全清理go run进程的问题
+6. **Admin用户创建问题** - 修复环境变量配置，确保管理员账户正常创建
+7. **RAG服务API缺失** - 完善了 `/api/v1/models` 端点实现
+
+### 🔧 技术细节和故障排除
+- 详细修复记录：[BUG_FIX_SUMMARY.md](./BUG_FIX_SUMMARY.md)
+- 故障排除指南：[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
+- 部署说明：[DEPLOYMENT.md](./DEPLOYMENT.md)
+
+## 🛠️ 手动安装
+
+如果需要手动配置环境，请参考：
+
+### 1. 准备数据库
+```bash
+# 检查 PostgreSQL 配置
+./check-postgres.sh
+
+# 手动配置数据库（如需要）
+sudo -u postgres createuser -d -r -s panda-wiki
+sudo -u postgres createdb -O panda-wiki panda-wiki
+sudo -u postgres psql -c "ALTER USER \"panda-wiki\" PASSWORD 'panda-wiki-secret';"
+```
+
+### 2. 启动基础服务
+```bash
+# 启动 Docker 服务
+docker-compose -f docker-compose.dev.yml up -d
+
+# 检查服务状态
+docker-compose -f docker-compose.dev.yml ps
+```
+
+### 3. 启动应用服务
+```bash
+# 设置环境变量
+export ADMIN_PASSWORD=admin123456
+export JWT_SECRET=your-jwt-secret-key-here
+export POSTGRES_PASSWORD=panda-wiki-secret
+
+# 启动RAG服务
+python3 raglite-service.py &
+
+# 启动后端服务
+cd backend && go run ./cmd/api &
+
+# 启动管理界面
+cd web/admin && npm install && npm run dev &
+
+# 启动用户界面
+cd web/app && npm install && npm run dev &
+```
+
+## 🔧 管理命令
+
+### 服务管理
+```bash
+./start-all.sh       # 启动所有服务
+./stop-all.sh        # 停止所有服务
+./status.sh          # 查看服务状态
+./check-postgres.sh  # 检查PostgreSQL配置
+```
+
+### 日志查看
+```bash
+tail -f logs/*.log           # 查看所有日志
+tail -f logs/backend.log     # 查看后端日志
+tail -f logs/raglite.log     # 查看RAG服务日志
+tail -f logs/admin.log       # 查看管理界面日志
+tail -f logs/app.log         # 查看用户界面日志
+```
+
+### 故障排除
+```bash
+# 检查端口占用
+lsof -i :8000  # 后端API
+lsof -i :8080  # RAG服务
+lsof -i :5173  # 管理界面
+lsof -i :3010  # 用户界面
+
+# 重启单个服务
+./stop-all.sh && ./start-all.sh
+
+# 清理Docker服务
+docker-compose -f docker-compose.dev.yml down -v
+```
+
+## 📚 功能特性
+
+- **智能知识库管理**: 支持多种文档格式
+- **RAG问答系统**: 基于知识库的智能问答
+- **多模型支持**: 集成多种AI模型
+- **用户权限管理**: 完整的用户和权限体系
+- **实时协作**: 支持多用户协作编辑
+- **一键部署**: 完整的服务管理脚本
+
+## 📖 使用说明
+
+1. **环境准备**: 确保所有依赖已安装
+2. **启动服务**: 运行 `./start-all.sh`
+3. **访问系统**: 打开管理界面进行配置
+4. **创建知识库**: 在管理界面创建新的知识库
+5. **添加文档**: 上传或创建文档内容
+6. **配置模型**: 设置AI模型和参数
+7. **发布知识库**: 发布后即可使用问答功能
+
+## 🐛 问题反馈
+
+如遇到问题，请：
+1. **检查日志**: `tail -f logs/*.log`
+2. **检查服务**: `./status.sh`
+3. **检查数据库**: `./check-postgres.sh`
+4. **重启服务**: `./stop-all.sh && ./start-all.sh`
+5. **提交Issue**: 到GitHub提交问题报告
+
+## 📄 更多文档
+
+- **[PostgreSQL配置](./README_PostgreSQL.md)** - 数据库安装和配置
+- **[部署说明](./DEPLOYMENT.md)** - 生产环境部署指南
+- **[Bug修复记录](./BUG_FIX_SUMMARY.md)** - 问题修复详情
+- **[更新日志](./CHANGELOG.md)** - 版本更新记录
+- **[项目整理总结](./PROJECT_SUMMARY.md)** - 项目重构记录
+
+## 📄 License
+
+MIT License. 详见 [LICENSE](./LICENSE) 文件。

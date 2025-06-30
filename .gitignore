@@ -21,13 +21,52 @@
 go.work
 go.work.sum
 
-# env file
+# Environment variables
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
+# OS generated files
 **/.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
+# IDE files
 .vscode
-
-deploy
-
 .idea
+*.swp
+*.swo
+
+# Runtime files
+logs/*.log
+pids/*.pid
+*.pid
+*.log
+
+# Temporary files
+tmp/
+temp/
+archive/
+
+# Build outputs
+deploy
+dist/
+build/
+
+# Node modules
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
