@@ -44,7 +44,7 @@ Thumbs.db
 *.swo
 
 # Runtime files
-logs/*.log
+logs/
 pids/*.pid
 *.pid
 *.log
